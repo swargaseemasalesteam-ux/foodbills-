@@ -8,7 +8,7 @@ const fs = require('fs');
 // Submit Food Bill (Agent or Public User)
 const createBill = async (req, res) => {
   try {
-    const { agentId, date, foodType, amount, paymentMethod, remarks } = req.body;
+    const { agentId, date, foodType, amount, paymentMethod, remarks, packetCount } = req.body;
 
     if (!req.file) {
       return res.status(400).json({ message: 'Payment screenshot image is required.' });
@@ -24,6 +24,8 @@ const createBill = async (req, res) => {
       storageService.deleteFile(req.file.filename);
       return res.status(400).json({ message: 'Amount paid must be greater than ₹0.' });
     }
+
+    const numericCount = parseInt(packetCount, 10) || 1;
 
     const agent = await Agent.findById(agentId);
     if (!agent || agent.status !== 'Active') {
@@ -60,6 +62,7 @@ const createBill = async (req, res) => {
       agentId: agent.employeeId,
       date: submissionDate,
       foodType,
+      packetCount: numericCount,
       amount: numericAmount,
       paymentMethod,
       screenshotUrl,

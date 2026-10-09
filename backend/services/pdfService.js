@@ -198,7 +198,7 @@ const generateScreenshotPDF = (bills, periodInfo, res) => {
       doc.fontSize(8)
          .font('Helvetica')
          .fillColor('#475569')
-         .text(`Via: ${bill.paymentMethod} (${bill.foodType})`, x + cardWidth - 110, y + 46, { width: 102, align: 'right' });
+         .text(`Via: ${bill.paymentMethod} (${bill.foodType} x${bill.packetCount || 1})`, x + cardWidth - 120, y + 46, { width: 112, align: 'right' });
 
       // Divider line before screenshot image
       doc.moveTo(x + 4, y + 60)

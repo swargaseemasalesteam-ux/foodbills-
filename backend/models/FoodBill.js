@@ -28,6 +28,12 @@ const foodBillSchema = new mongoose.Schema({
     enum: ['Breakfast', 'Lunch', 'Dinner', 'Snacks', 'Other'],
     required: true
   },
+  packetCount: {
+    type: Number,
+    required: true,
+    min: 1,
+    default: 1
+  },
   amount: {
     type: Number,
     required: true,

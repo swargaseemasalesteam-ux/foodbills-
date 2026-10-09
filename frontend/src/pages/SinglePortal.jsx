@@ -47,6 +47,7 @@ const SinglePortal = () => {
   const [selectedAgentId, setSelectedAgentId] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [foodType, setFoodType] = useState('Dinner');
+  const [packetCount, setPacketCount] = useState(1);
   const [amount, setAmount] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('UPI');
   const [remarks, setRemarks] = useState('');
@@ -167,6 +168,7 @@ const SinglePortal = () => {
       formData.append('agentId', selectedAgentId);
       formData.append('date', date);
       formData.append('foodType', foodType);
+      formData.append('packetCount', packetCount);
       formData.append('amount', amount);
       formData.append('paymentMethod', paymentMethod);
       formData.append('remarks', remarks);
@@ -400,10 +402,25 @@ const SinglePortal = () => {
                   </div>
                 </div>
 
-                {/* 4 & 5. Amount & Payment Method */}
+                {/* 4 & 5. Count & Amount Paid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">4. Amount Paid (₹) *</label>
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                      4. No. of Packets / Count *
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      required
+                      placeholder="1"
+                      value={packetCount}
+                      onChange={(e) => setPacketCount(Math.max(1, parseInt(e.target.value) || 1))}
+                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs font-bold text-slate-900 outline-none focus:border-primary-900 bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">5. Amount Paid (₹) *</label>
                     <div className="relative">
                       <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-xs">₹</span>
                       <input
@@ -418,26 +435,27 @@ const SinglePortal = () => {
                       />
                     </div>
                   </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">5. Payment Method *</label>
-                    <select
-                      value={paymentMethod}
-                      onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs text-slate-800 bg-white font-medium outline-none focus:border-primary-900"
-                    >
-                      <option value="UPI">UPI</option>
-                      <option value="Cash">Cash</option>
-                      <option value="Card">Card</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
                 </div>
 
-                {/* 6. Screenshot Upload */}
+                {/* 6. Payment Method */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">6. Payment Method *</label>
+                  <select
+                    value={paymentMethod}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs text-slate-800 bg-white font-medium outline-none focus:border-primary-900"
+                  >
+                    <option value="UPI">UPI</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Card">Card</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                {/* 7. Screenshot Upload */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    6. Payment Screenshot *
+                    7. Payment Screenshot *
                   </label>
                   <div className="relative rounded-2xl border-2 border-dashed border-slate-300 p-4 text-center hover:border-primary-900 bg-slate-50/50">
                     <input
@@ -461,9 +479,9 @@ const SinglePortal = () => {
                   </div>
                 </div>
 
-                {/* 7. Remarks */}
+                {/* 8. Remarks */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">7. Optional Remarks</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">8. Optional Remarks</label>
                   <textarea
                     rows="2"
                     placeholder="Add any note..."
@@ -568,6 +586,7 @@ const SinglePortal = () => {
                       <th className="py-3.5 px-4">Date</th>
                       <th className="py-3.5 px-4">Agent Name</th>
                       <th className="py-3.5 px-4">Food Type</th>
+                      <th className="py-3.5 px-4 text-center">Count</th>
                       <th className="py-3.5 px-4">Amount</th>
                       <th className="py-3.5 px-4">Method</th>
                       <th className="py-3.5 px-4 text-center">Screenshot</th>
@@ -581,6 +600,7 @@ const SinglePortal = () => {
                         <td className="py-3.5 px-4 whitespace-nowrap">{new Date(bill.date).toISOString().split('T')[0]}</td>
                         <td className="py-3.5 px-4 font-bold text-slate-900 whitespace-nowrap">{bill.agentName}</td>
                         <td className="py-3.5 px-4">{bill.foodType}</td>
+                        <td className="py-3.5 px-4 text-center font-bold text-slate-800">{bill.packetCount || 1}</td>
                         <td className="py-3.5 px-4 font-extrabold text-slate-900">₹{bill.amount}</td>
                         <td className="py-3.5 px-4">{bill.paymentMethod}</td>
                         <td className="py-3.5 px-4 text-center">
@@ -767,6 +787,10 @@ const SinglePortal = () => {
               <span>{foodType}</span>
             </div>
             <div className="flex justify-between">
+              <span className="text-slate-500">No. of Packets / Count:</span>
+              <span className="font-bold text-slate-900">{packetCount}</span>
+            </div>
+            <div className="flex justify-between">
               <span className="text-slate-500">Payment Method:</span>
               <span>{paymentMethod}</span>
             </div>
@@ -807,7 +831,9 @@ const SinglePortal = () => {
               <div><span className="text-slate-400 block">Agent Name</span><span className="font-bold text-slate-900">{selectedBill.agentName}</span></div>
               <div><span className="text-slate-400 block">Date</span><span className="font-semibold text-slate-900">{new Date(selectedBill.date).toISOString().split('T')[0]}</span></div>
               <div><span className="text-slate-400 block">Food Type</span><span className="font-semibold text-slate-900">{selectedBill.foodType}</span></div>
+              <div><span className="text-slate-400 block">Packets / Count</span><span className="font-bold text-slate-900">{selectedBill.packetCount || 1}</span></div>
               <div><span className="text-slate-400 block">Amount Paid</span><span className="font-bold text-emerald-600">₹{selectedBill.amount}</span></div>
+              <div><span className="text-slate-400 block">Payment Method</span><span className="font-semibold text-slate-900">{selectedBill.paymentMethod}</span></div>
             </div>
 
             <div className="border border-slate-200 rounded-xl p-2 bg-slate-100 flex justify-center">

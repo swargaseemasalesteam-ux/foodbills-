@@ -97,7 +97,7 @@ const generateExcelReport = async (bills, periodInfo) => {
 
   const detailsHeaders = [
     'S.No', 'Bill ID', 'Date', 'Agent Name', 'Agent ID', 
-    'Food Type', 'Amount (₹)', 'Payment Method', 'Status', 'Remarks', 'Rejection Reason'
+    'Food Type', 'Count', 'Amount (₹)', 'Payment Method', 'Status', 'Remarks', 'Rejection Reason'
   ];
 
   const detailsHeaderRow = detailsSheet.addRow(detailsHeaders);
@@ -116,6 +116,7 @@ const generateExcelReport = async (bills, periodInfo) => {
       bill.agentName,
       bill.agentId,
       bill.foodType,
+      bill.packetCount || 1,
       bill.amount,
       bill.paymentMethod,
       bill.status,
@@ -126,20 +127,21 @@ const generateExcelReport = async (bills, periodInfo) => {
     row.getCell(1).alignment = { horizontal: 'center' };
     row.getCell(2).alignment = { horizontal: 'center' };
     row.getCell(3).alignment = { horizontal: 'center' };
-    row.getCell(7).numFmt = '₹#,##0.00';
-    row.getCell(7).alignment = { horizontal: 'right' };
-    row.getCell(9).alignment = { horizontal: 'center' };
+    row.getCell(7).alignment = { horizontal: 'center' };
+    row.getCell(8).numFmt = '₹#,##0.00';
+    row.getCell(8).alignment = { horizontal: 'right' };
+    row.getCell(10).alignment = { horizontal: 'center' };
   });
 
   // Total Row at bottom
   const totalRowIndex = bills.length + 2;
   const totalRow = detailsSheet.addRow([
-    '', 'TOTAL', '', '', '', '', totalAmount, '', '', '', ''
+    '', 'TOTAL', '', '', '', '', '', totalAmount, '', '', '', ''
   ]);
   totalRow.font = { bold: true };
   totalRow.getCell(2).alignment = { horizontal: 'center' };
-  totalRow.getCell(7).numFmt = '₹#,##0.00';
-  totalRow.getCell(7).alignment = { horizontal: 'right' };
+  totalRow.getCell(8).numFmt = '₹#,##0.00';
+  totalRow.getCell(8).alignment = { horizontal: 'right' };
 
   detailsSheet.columns = [
     { width: 8 },
@@ -148,6 +150,7 @@ const generateExcelReport = async (bills, periodInfo) => {
     { width: 22 },
     { width: 14 },
     { width: 16 },
+    { width: 10 },
     { width: 16 },
     { width: 16 },
     { width: 14 },
